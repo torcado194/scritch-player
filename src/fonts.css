@@ -1,0 +1,127 @@
+@font-face {
+  font-family: 'icons';
+  src:  url('fonts/icons.eot?qqpgvs');
+  src:  url('fonts/icons.eot?qqpgvs#iefix') format('embedded-opentype'),
+    url('fonts/icons.ttf?qqpgvs') format('truetype'),
+    url('fonts/icons.woff?qqpgvs') format('woff'),
+    url('fonts/icons.svg?qqpgvs#icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icons' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  font-size: 20px;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-config:before {
+  content: "\1f4c3";
+}
+.icon-title:before {
+  content: "\1e6e";
+}
+.icon-edit-info:before {
+  content: "\1f4dd";
+}
+.icon-info:before {
+  content: "\1f5c9";
+}
+.icon-lyrics:before {
+  content: "\1f3bc";
+}
+.icon-pull:before {
+  content: "\2913";
+}
+.icon-text:before {
+  content: "\1f5b9";
+}
+.icon-error:before {
+  content: "\24e7";
+}
+.icon-exclamation:before {
+  content: "\21";
+}
+.icon-unknown:before {
+  content: "\3f";
+}
+.icon-warning:before {
+  content: "\26a0";
+}
+.icon-x:before {
+  content: "\d7";
+}
+.icon-cover:before {
+  content: "\1f4bd";
+}
+.icon-star:before {
+  content: "\2605";
+}
+.icon-star-outline:before {
+  content: "\2606";
+}
+.icon-grab:before {
+  content: "\2630";
+}
+.icon-audio:before {
+  content: "\266b";
+}
+.icon-image:before {
+  content: "\1f5bc";
+}
+.icon-trash:before {
+  content: "\1f5d1";
+}
+.icon-video:before {
+  content: "\1f4f9";
+}
+.icon-dots:before {
+  content: "\22ef";
+}
+.icon-loading:before {
+  content: "\1f504";
+}
+.icon-next:before {
+  content: "\23ed";
+}
+.icon-previous:before {
+  content: "\23ee";
+}
+.icon-volume-high:before {
+  content: "\1f50a";
+}
+.icon-volume-low:before {
+  content: "\1f509";
+}
+.icon-volume-none:before {
+  content: "\1f508";
+}
+.icon-volume-x:before {
+  content: "\1f507";
+}
+.icon-pause:before {
+  content: "\23f8";
+}
+.icon-play:before {
+  content: "\25b6";
+}
+.icon-plus-big:before {
+  content: "\2b";
+}
+.icon-drop-big:before {
+  content: "\2b07";
+}
+.icon-loading-big:before {
+  content: "\25cc";
+}

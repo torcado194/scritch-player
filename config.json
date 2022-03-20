@@ -1,0 +1,13 @@
+{
+    "title": "",
+    "media": [],
+    "cover": "",
+    "theme": {
+        "coverSize": 480,
+        "layoutStyle": "vertical",
+        "infoStyle": "overlaid",
+        "contentWidth": 400,
+        "nativePlayer": false
+    },
+    "description": ""
+}
