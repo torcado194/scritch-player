@@ -1,6 +1,6 @@
 # Scritch player
 
-![logo](https://imgur.com/d9rXRPX.png)
+![logo](https://imgur.com/uHFIa0q.png)
 
 Scritch player designed for ease of creation and customization. If you have a collection of audio files, simply drop them in and upload to a website to get a player to listen to it!
 
