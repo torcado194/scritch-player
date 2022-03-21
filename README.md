@@ -129,7 +129,7 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 \
 **theme options**  
 
-*all settings are optional. Colors can be any valid CSS color*
+*all settings are optional. colors can be any valid CSS color*
 
 `titleStyle`  
 > Styles the title text, if available.  
