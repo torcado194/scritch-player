@@ -142,7 +142,7 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 
 \
 `primaryColor`  
-> Color of the controls  
+> Main color of the controls (e.g. the circle of the play button, the prev/next track buttons, the filled progress bar, etc.)  
 
 \
 `primaryAltColor`  
@@ -166,18 +166,18 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 
 \
 `linkColor`  
-> Text color of links  
+> Color of links in text  
 
 \
 `layoutStyle`  
 > Styles the overall structure of the player  
 > `"horizontal"` (default) the cover image sits to the right of the player controls and track list  
-> `"vertical"` all elements aligned vertically, title -> cover -> controls -> track list  
+> `"vertical"` all elements align vertically (from top to bottom: title -> cover -> controls -> track list)  
 
 \
 `infoStyle`  
 > Styles the track info of the currently playing track  
-> `"overlaid"` (default) text sits on top of the cover image  
+> `"overlaid"` (default) text sits layered on top of the cover image  
 > `"below"` text sits below the cover image (note: this will push down the controls and track list in a vertical layout)  
 
 \
