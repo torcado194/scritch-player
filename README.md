@@ -57,7 +57,6 @@ Otherwise, manually setting up the player is just as easy.
 6. (optional) Edit `config.json` to modify the player's theme to your liking:
 
 ```json
-...
 "theme": {
     "coverSize": 480,
     "layoutStyle": "horizontal",
@@ -66,7 +65,6 @@ Otherwise, manually setting up the player is just as easy.
     "contentWidth": 400,
     "nativePlayer": false
 },
-...
 ```
 
 And that's it! you can upload the files to your website, or zip them up and upload to [itch.io](https://itch.io), or anywhere else that can host HTML projects.
