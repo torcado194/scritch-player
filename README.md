@@ -77,7 +77,7 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 *note: all display-text options can include HTML, not just plain text*
 
 `title` (optional)
-> Text at the top of the player
+> Text at the top of the player  
 > `"title": "My Album"`  
   
 
