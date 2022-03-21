@@ -21,7 +21,6 @@ Otherwise, manually setting up the player is just as easy.
 2. Edit `config.json` to include the audio files. Add entries to the `media` array like so:
 
 ```json
-...
 "media": [
     {
         "file": "track1.mp3",
@@ -34,29 +33,24 @@ Otherwise, manually setting up the player is just as easy.
         "title": "Track 2",
     },
     ...
-],
-...
+]
 ```
 
 3. Set the cover art file in `config.json`:
 
 ```json
-...
 "cover": "cover.png"
-...
 ```
 
 4. (optional) Add a title to `config.json`, like so:
 
 ```json
-"title": "My Album",
-...
+"title": "My Album"
 ```
 
 5. (optional) Add a description to `config.json`, like so:
 
 ```json
-...
 "description": "(add text here)"
 ```
 
@@ -85,7 +79,7 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 `title` (optional)
 > Text at the top of the player
 > `"title": "My Album"`
-
+  
 `media`
 > List of media files to include in the player
 > ```json
@@ -126,7 +120,7 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 
 **theme options**
 
-*all settigns are optional. Colors can be any valid CSS color*
+*all settings are optional. Colors can be any valid CSS color*
 
 `titleStyle`
 > Styles the title text, if available.
