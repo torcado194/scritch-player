@@ -78,9 +78,9 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 
 `title` (optional)
 > Text at the top of the player
-> `"title": "My Album"`
+> `"title": "My Album"`  
   
-  
+
 `media`
 > List of media files to include in the player
 > ```json
