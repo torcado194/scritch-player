@@ -101,7 +101,8 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 > An object containing theme settings and colors  
 
 \
-**media entry options**
+**media entry options**  
+
 `file`  
 > The name of the file in the /media folder  
 
@@ -126,7 +127,7 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 > Extra text for this file, such as for lyrics or artist attributions. This will be optionally shown over/under the cover image, or togglable below the track.  
 
 \
-**theme options**
+**theme options**  
 
 *all settings are optional. Colors can be any valid CSS color*
 
