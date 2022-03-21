@@ -2,7 +2,7 @@
 
 ![logo](https://imgur.com/uHFIa0q.png)
 
-Scritch player designed for ease of creation and customization. If you have a collection of audio files, simply drop them in and upload to a website to get a player to listen to it!
+Scritch player is a simple HTML media player designed for ease of creation and customization. If you have a collection of audio files, simply drop them in and upload to a website to get a player to listen to it!
 
 The original intention was to create a media player for musicians to use to upload their albums to [itch.io](https://itch.io). Something for them to easily copy/migrate their existing albums from sites like bandcamp.
 
