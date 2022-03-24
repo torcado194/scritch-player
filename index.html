@@ -36,8 +36,9 @@
 
     /* basic layout */
     html, body {
-        max-width: 960px;
         width: 100%;
+        height: 100%;
+        overflow: auto;
     }
 
     body {
@@ -53,9 +54,12 @@
     #mainContainer {
         position: relative;
         display: grid;
-        grid-template-columns: auto auto;
         justify-content: space-around;
         width: 100%;
+        max-width: 960px;
+        left: 0;
+        right: 0;
+        margin: auto;
         margin-bottom: 40px;
     }
 
@@ -69,12 +73,18 @@
 
     /*** title ***/
 
+    #titleContainer {
+        height: 0;
+    }
+    #titleContainer.active {
+        height: auto;
+    }
     #title {
         margin: 20px 20px 4px 20px;
         font-size: 26px;
         display: none;
     }
-    #title.active {
+    #titleContainer.active #title {
         display: block;
     }
     #mainContainer.vertical #title {
@@ -85,18 +95,21 @@
         margin: 20px;
         text-align: center;
     }
-    #mainContainer.title-span #titleContainer {
+    #mainContainer:not(.vertical).title-span #titleContainer {
         grid-column: 1/3;
     }
 
     /*** media column ***/
 
     #mediaColumn {
+        display: none;
         grid-row: 1/3;
         grid-column: 2;
-        display: flex;
         flex-direction: column;
         position: relative;
+    }
+    #mediaColumn.active {
+        display: flex;
     }
     #mainContainer.vertical #mediaColumn {
         grid-row: 2;
@@ -301,6 +314,7 @@
         font-size: 12px;
         align-self: end;
         color: var(--primaryAltTextColor);
+        user-select: none;
     }
 
     #controls #scrubberTrackContainer {
@@ -310,6 +324,7 @@
         padding: 4px 0;
         user-select: none;
         cursor: pointer;
+        touch-action: none;
     }
     #controls #scrubberTrack {
         background-color: var(--primaryAltColor);
@@ -369,6 +384,7 @@
         position: relative;
         align-self: start;
         transition: width 0.2s;
+        touch-action: none;
     }
     #controls #volumeContainer.hover #volumeTrackContainer {
         width: 80px;
@@ -610,12 +626,12 @@
                         <div class="riser"></div>
                         <div class="title">____</div>
                         <div class="time"></div>
-                        <div id="scrubberTrackContainer">
+                        <button id="scrubberTrackContainer">
                             <div id="scrubberTrack">
                                 <div id="scrubberFill"></div>
                             </div>
                             <div id="scrubber"></div>
-                        </div>
+                        </button>
                         <button id="prevTrack" class="icon-previous"></button>
                         <button id="nextTrack" class="icon-next"></button>
                         <div class="spacer"></div>
@@ -651,6 +667,7 @@
     let prevTrackEl = document.getElementById('prevTrack');
     
     let titleEl = document.getElementById('title');
+    let titleContainerEl = document.getElementById('titleContainer');
     let mediaColumnEl = document.getElementById('mediaColumn');
     let mediaContainerEl = document.getElementById('mediaContainer');
     let mediaInfoEl = document.getElementById('mediaInfo');
@@ -715,7 +732,7 @@
             document.getElementById('audio').classList.remove('native');
             mediaVideoEl.removeAttribute('controls');
         }
-        mediaContainerEl.style.maxWidth = mediaContainerEl.style.maxHeight = theme.coverSize + 'px';
+        mediaContainerEl.style.maxWidth = theme.coverSize + 'px';
         mediaColumnEl.style.maxWidth = theme.coverSize + 'px';
 
         if(theme.customCSS !== undefined){
@@ -728,16 +745,21 @@
     }
 
     function loadContent(data){
-        if(data.cover) loadCover(data.cover);
+        if(data.cover){
+            mediaColumnEl.classList.add('active');
+            loadCover(data.cover);
+        } else {
+            mediaColumnEl.classList.remove('active');
+        }
         if(data.media) loadMedia(data.media);
     }
     function updateTitle(title){
         if(title){
-            titleEl.classList.add('active');
+            titleContainerEl.classList.add('active');
             config.title = title;
             titleEl.innerHTML = title;
         } else {
-            titleEl.classList.remove('active');
+            titleContainerEl.classList.remove('active');
         }
     }
     function updateDescription(description){
@@ -759,12 +781,12 @@
         let description = data.description;
         config = data;
         
-        console.log(data);
-        
         loadContent(data);
         updateTitle(title)
         updateDescription(description);
         updateTheme(theme);
+
+        document.title = titleEl.textContent;
 
         try {
             volume = parseFloat(localStorage.getItem('volume'));
@@ -844,7 +866,6 @@
                 loaderEl = document.createElement('audio');
             }
             loaderEl.addEventListener('loadedmetadata', e => {
-                console.log('loaded metadata', entry.title);
                 entry.duration = e.target.duration;
                 trackEl.querySelector('.duration').textContent = toHMS(entry.duration);
                 if(entry === currentEntry){
@@ -859,7 +880,6 @@
                 trackEl.querySelector('button').setAttribute('title', 'error loading file');
             });
             loaderEl.addEventListener('canplay', e => {
-                console.log('can play', entry.title);
                 removeLoading(entry, true);
             });
             loaderEl.volume = 0;
@@ -1022,11 +1042,11 @@
     }
     
     let scrubberDragged = false;
-    scrubberTrackContainerEl.addEventListener('mousedown', e => {
+    scrubberTrackContainerEl.addEventListener('pointerdown', e => {
         scrubberDragged = true;
         scrub(e.clientX);
     });
-    document.addEventListener('mouseup', e => {
+    document.addEventListener('pointerup', e => {
         if(scrubberDragged){
             scrubberDragged = false;
             endScrub();
@@ -1036,9 +1056,12 @@
             endVolumeScrub();
         }
     });
-    document.addEventListener('mousemove', e => {
+    document.addEventListener('pointermove', e => {
         scrub(e.clientX);
         scrubVolume(e.clientX);
+    });
+    document.addEventListener('pointercancel', e => {
+        console.log(e);
     });
 
     nextTrackEl.addEventListener('click', e => {
@@ -1179,7 +1202,7 @@
         playerEl.src = entry.file;
         setLoading(currentEntry);
         entry.trackEl.classList.add('active');
-        controlsEl.querySelector('.title').textContent = entry.title;
+        controlsEl.querySelector('.title').innerHTML = entry.title;
         if(entry.info){
             mediaInfoEl.innerHTML = entry.info;
             mediaInfoContainer.classList.add('active');
