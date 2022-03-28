@@ -119,14 +119,11 @@
     /*** media column ***/
 
     #mediaColumn {
-        display: none;
+        display: flex;
         grid-row: 1/3;
         grid-column: 2;
         flex-direction: column;
         position: relative;
-    }
-    #mediaColumn.active {
-        display: flex;
     }
     #mainContainer.vertical #mediaColumn {
         grid-row: 2;
@@ -752,6 +749,7 @@
             mediaVideoEl.removeAttribute('controls');
         }
         mediaContainerEl.style.maxWidth = theme.coverSize + 'px';
+        mediaContainerEl.style.maxHeight = theme.coverSize + 'px';
         mediaColumnEl.style.maxWidth = theme.coverSize + 'px';
 
         if(theme.customCSS !== undefined){
@@ -765,10 +763,11 @@
 
     function loadContent(data){
         if(data.cover){
-            mediaColumnEl.classList.add('active');
             loadCover(data.cover);
         } else {
-            mediaColumnEl.classList.remove('active');
+            mediaImageEl.style.width = data.theme.coverSize + 'px';
+            mediaImageEl.style.height = data.theme.coverSize + 'px';
+            mediaImageEl.style.visibility = 'hidden';
         }
         if(data.media) loadMedia(data.media);
     }
