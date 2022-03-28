@@ -788,6 +788,24 @@
         }
     }
 
+    function localStorageSet(key, value){
+        try {
+            localStorage.setItem(key, value);
+        } catch {
+
+        }
+    }
+    
+    function localStorageGet(key){
+        let value;
+        try {
+            value = localStorage.getItem(key);
+        } catch {
+            return undefined;
+        }
+        return value;
+    }
+
     function update(data){
         if(!data){
             data = config;
@@ -807,18 +825,14 @@
 
         document.title = titleEl.textContent;
 
-        try {
-            volume = parseFloat(localStorage.getItem('volume'));
-            muted = parseInt(localStorage.getItem('muted'));
-        } catch {
-            
-        }
+        volume = parseFloat(localStorageGet('volume'));
+        muted = parseInt(localStorageGet('muted'));
         if(volume && typeof volume === 'number'){
             setVolume(volume, muted);
         } else {
             volume = 0.8;
             muted = false;
-            localStorage.setItem('volume', volume);
+            localStorageSet('volume', volume);
         }
     }
     
@@ -948,7 +962,7 @@
     playerEl.addEventListener('volumechange', e => {
         if(config.theme.nativePlayer){
             volume = e.target.volume;
-            localStorage.setItem('volume', volume);
+            localStorageSet('volume', volume);
         }
         if(currentEntry.type === 'video'){
             if(config.theme.nativePlayer){
@@ -961,7 +975,7 @@
     mediaVideoEl.addEventListener('volumechange', e => {
         if(currentEntry.type === 'video' && config.theme.nativePlayer){
             volume = e.target.volume;
-            localStorage.setItem('volume', volume);
+            localStorageSet('volume', volume);
         }
     });
     playerEl.addEventListener('timeupdate', e => {
@@ -1033,8 +1047,8 @@
     
     function setVolume(vol, mute=false){
         volume = vol;
-        localStorage.setItem('volume', volume);
-        localStorage.setItem('muted', mute ? 1 : 0);
+        localStorageSet('volume', volume);
+        localStorageSet('muted', mute ? 1 : 0);
         vol = mute ? 0 : vol;
         if(currentEntry.type === 'video'){
             if(config.theme.nativePlayer){
