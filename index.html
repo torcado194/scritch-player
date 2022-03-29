@@ -458,6 +458,9 @@
         flex-wrap: wrap;
         border-radius: 6px;
     }
+    .track.locked {
+        opacity: 0.35;
+    }
     .track.active:before {
         content: '';
         width: 100%;
@@ -494,7 +497,7 @@
         align-items: center;
         justify-content: center;
     }
-    .track button:not(.loading, .error):after {
+    .track button:not(.loading, .error, .locked):after {
         content: '';
         display: block;
         width: 0px;
@@ -507,7 +510,7 @@
         position: relative;
         left: 1px;
     }
-    .track button:not(.loading, .error).pause:after {
+    .track button:not(.loading, .error, .locked).pause:after {
         content: '';
         border: 0;
         border-left: 4px solid var(--secondaryColor);
@@ -535,6 +538,22 @@
     .track button.error {
         opacity: 0.5;
         cursor: default;
+    }
+
+    .track button.locked {
+        cursor: default;
+    }
+    .track button.locked:after {
+        content: "\1f512";
+        color: var(--secondaryColor);
+        font-family: 'icons' !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        font-size: 20px;
     }
 
     .track .title {
@@ -855,9 +874,9 @@
         tracksEl.textContent = '';
         media.forEach((entry, i) => {
             tracksEl.insertAdjacentHTML('beforeend', 
-            `<div class="track">
+            `<div class="track ${entry.locked ? 'locked' : ''}" ${entry.locked ? 'title="This track is only available to supporters"' : ''}>
                 <div class="main">
-                    <button class="loading"></button>
+                    <button class="${entry.locked ? 'locked' : 'loading'}"></button>
                     <div class="details">
                         <div class="number">${i+1}. </div>
                         <div class="title">${entry.title}</div>
@@ -879,10 +898,8 @@
             if(entry.feature){
                 featureIndex = i;
             }
-            trackEl.querySelector('button').onclick = () => {
-                loadedFirst = true;
-                autoPlay = true;
-                playEntry(entry);
+            if(entry.locked && featureIndex === i){
+                featureIndex++;
             }
             if(entry.info){
                 let infoContainerEl = trackEl.querySelector('.infoContainer');
@@ -891,32 +908,39 @@
                     infoContainerEl.classList.toggle('active');
                 });
             }
-            let loaderEl;
-            if(entry.type === 'video'){
-                loaderEl = document.createElement('video');
-            } else {
-                loaderEl = document.createElement('audio');
-            }
-            loaderEl.addEventListener('loadedmetadata', e => {
-                entry.duration = e.target.duration;
-                trackEl.querySelector('.duration').textContent = toHMS(entry.duration);
-                if(entry === currentEntry){
-                    updateScrubPosition(0);
+            if(!entry.locked){
+                trackEl.querySelector('button').onclick = () => {
+                    loadedFirst = true;
+                    autoPlay = true;
+                    playEntry(entry);
                 }
-            });
-            loaderEl.addEventListener('error', e => {
-                entry.error = true;
-                entry.errorMessage = e.target.error;
-                removeLoading(entry, true);
-                trackEl.querySelector('button').classList.add('error', 'icon-warning');
-                trackEl.querySelector('button').setAttribute('title', 'error loading file');
-            });
-            loaderEl.addEventListener('canplay', e => {
-                removeLoading(entry, true);
-            });
-            loaderEl.volume = 0;
-            loaderEl.src = entry.file;
-            entry.loading = true;
+                let loaderEl;
+                if(entry.type === 'video'){
+                    loaderEl = document.createElement('video');
+                } else {
+                    loaderEl = document.createElement('audio');
+                }
+                loaderEl.addEventListener('loadedmetadata', e => {
+                    entry.duration = e.target.duration;
+                    trackEl.querySelector('.duration').textContent = toHMS(entry.duration);
+                    if(entry === currentEntry){
+                        updateScrubPosition(0);
+                    }
+                });
+                loaderEl.addEventListener('error', e => {
+                    entry.error = true;
+                    entry.errorMessage = e.target.error;
+                    removeLoading(entry, true);
+                    trackEl.querySelector('button').classList.add('error', 'icon-warning');
+                    trackEl.querySelector('button').setAttribute('title', 'error loading file');
+                });
+                loaderEl.addEventListener('canplay', e => {
+                    removeLoading(entry, true);
+                });
+                loaderEl.volume = 0;
+                loaderEl.src = entry.file;
+                entry.loading = true;
+            }
         });
         loadEntry(media[featureIndex]);
     }
@@ -1135,6 +1159,10 @@
         }
     }
 
+    function canPlay(entry){
+        return !entry.error && !entry.locked;
+    }
+
     function nextTrack(loop=true){
         let idx = media.indexOf(currentEntry)+1;
         if(!loop && idx >= media.length){
@@ -1142,7 +1170,7 @@
         }
         let entry = media[mod(idx, media.length)];
         let i = 0;
-        while(entry.error && i < media.length){
+        while(!canPlay(entry) && i < media.length){
             i++;
             idx++;
             if(!loop && idx >= media.length){
@@ -1159,7 +1187,7 @@
             let idx = media.indexOf(currentEntry)-1;
             let entry = media[mod(idx, media.length)];
             let i = 0;
-            while(entry.error && i < media.length){
+            while(!canPlay(entry) && i < media.length){
                 i++;
                 idx--;
                 entry = media[mod(idx, media.length)];
@@ -1197,6 +1225,9 @@
     
     function loadEntry(entry){
         if(entry.error){
+            return;
+        }
+        if(entry.locked){
             return;
         }
         media.forEach(entry => {
