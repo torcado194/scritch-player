@@ -60,7 +60,6 @@
         left: 0;
         right: 0;
         margin: auto;
-        margin-bottom: 40px;
     }
 
     #mainContainer.vertical {
@@ -605,9 +604,15 @@
     /* description */
 
     #description {
+        display: none;
         padding: 8px;
         margin-top: 24px;
         word-break: break-word;
+        margin-bottom: 40px;
+    }
+
+    #description.active {
+        display: block;
     }
 
 
@@ -800,7 +805,10 @@
         }
     }
     function updateDescription(description){
-        if(description !== undefined){
+        if(description === undefined || description === ''){
+            descriptionEl.classList.remove('active');
+        } else {
+            descriptionEl.classList.add('active');
             config.description = description;
             descriptionEl.innerHTML = description;
         }
