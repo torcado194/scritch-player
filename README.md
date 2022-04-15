@@ -106,6 +106,7 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 
 `file`  
 > The name of the file in the /media folder  
+> Not required if entry is set to "locked"
 
 \
 `title` (optional)  
@@ -121,11 +122,47 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 `type` (optional)  
 > The type of the media.  
 > Can be either `"audio"` or `"video"`  
-> Defaults to "audio"  
+> Defaults to `"audio"`  
 
 \
 `info` (optional)  
 > Extra text for this file, such as for lyrics or artist attributions. This will be optionally shown over/under the cover image, or togglable below the track.  
+
+\
+`locked` (optional)  
+> If `true`, sets this file as "locked" preventing it from being playable.  
+> Can be either `true` or `false`  
+> Defaults to `false`  
+> Enable this if e.g. you want to show that this file would be available in the purchased download of your album.  
+> Note: the `file` field is not required if this is enabled, you shouldn't include the file in the player.  
+
+***preview options***  
+
+*a preview is a section of a full track, used if e.g. you want to include a snippet of a track that would be available in the purchased download of your album.*  
+*note: it is highly recommended that the file you use for a preview track is clipped to the region you want to preview, because the file can be accessed by users. Scritch will support the file in either case, however.*
+
+> e.g. `{"file": "track1.mp3", "title": "Track 1", previewStart: 12, previewEnd: 42, originalDuration: "1:20"}`
+
+\
+`previewStart` (optional, required for preview)  
+> The start time for the preview section of the full track.  
+> Can be a number of seconds or an H:M:S string, e.g. `125.3`, `"2:05"`, `"00:21:13.5"` are all valid.  
+
+\
+`previewEnd` (optional, required for preview)  
+> The end time for the preview section of the full track.  
+> Can be a number of seconds or an H:M:S string, e.g. `125.3`, `"2:05"`, `"00:21:13.5"` are all valid.  
+
+\
+`originalDuration` (optional, required for preview)  
+> The duration of the full (unclipped) track.  
+> Can be a number of seconds or an H:M:S string, e.g. `125.3`, `"2:05"`, `"00:21:13.5"` are all valid.  
+
+\
+`previewFade` (optional)  
+> If `true`, the player will automatically fade the audio at the start and end of the preview section.  
+> Can be either `true` or `false`  
+> Defaults to `true`  
 
 -----
 
@@ -165,6 +202,14 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 \
 `primaryAltTextColor`  
 > Color of e.g. the track numbers and duration, and the track info button  
+
+\
+`previewStripeColor1`  
+> First color of the striped bar on a preview track.  
+
+\
+`previewStripeColor2`  
+> Second color of the striped bar on a preview track.  
 
 \
 `linkColor`  
