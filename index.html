@@ -927,7 +927,7 @@
         tracksEl.textContent = '';
         media.forEach((entry, i) => {
             tracksEl.insertAdjacentHTML('beforeend', 
-            `<div class="track ${entry.locked ? 'locked' : ''}" ${entry.locked ? 'title="This track is only available to supporters"' : ''}>
+            `<div class="track ${entry.locked ? 'locked' : ''}" ${entry.locked ? 'title="This track is only available in the purchased download"' : ''}>
                 <div class="main">
                     <button class="${entry.locked ? 'locked' : 'loading'}"></button>
                     <div class="details">
