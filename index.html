@@ -1281,6 +1281,9 @@
 
     //t: 0-1 value in relation to the actual audio start/end
     function updateScrubPosition(t){
+        if(currentEntry.needsDuration){
+            return;
+        }
         //rebase t to full (assumed) duration
         t = currentEntry.audioStart + (t * currentEntry.duration);
         //clip to preview
@@ -1474,6 +1477,10 @@
 
 
     function toHMS(secs){
+        if(isNaN(secs)){
+            return '00:00';
+        }
+        
         let sec_num = Math.max(0, Math.round(secs)); //flooring is more correct, but rounding gives nicer results due to playback event buffering
         let hours   = Math.floor(sec_num / 3600);
         let minutes = Math.floor(sec_num / 60) % 60;
