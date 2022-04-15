@@ -138,7 +138,7 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 
 ***preview options***  
 
-*a preview is a section of a full track, used if e.g. you want to include a snippet of a track that would be available in the purchased download of your album.*  
+*a preview is a section of a full track, used if e.g. you want to include a snippet of a track that would be available in the full download of your album.*  
 *note: it is highly recommended that the file you use for a preview track is clipped to the region you want to preview, because the file can be accessed by users. Scritch will support the file in either case, however.*
 
 > e.g. `{"file": "track1.mp3", "title": "Track 1", previewStart: 12, previewEnd: 42, originalDuration: "1:20"}`
