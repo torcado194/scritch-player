@@ -141,7 +141,7 @@
         grid-row: 2/3;
     }
 
-    .info-overlaid #mediaColumn {
+    .info-overlaid #mediaColumn, .info-overlaid-toggle #mediaColumn {
         max-width: 480px;
         height: fit-content;
     }
@@ -181,7 +181,7 @@
         margin-top: 12px;
     }
 
-    .info-overlaid #mediaInfoContainer {
+    .info-overlaid #mediaInfoContainer, .info-overlaid-toggle #mediaInfoContainer {
         padding: 30px;
         margin: 0;
         position: absolute;
@@ -196,10 +196,10 @@
         opacity: 0;
         transition: opacity 0.25s;
     }
-    .info-overlaid #mediaInfoContainer.active {
+    .info-overlaid #mediaInfoContainer.active, .info-overlaid-toggle #mediaInfoContainer.active {
         opacity: 1;
     }
-    .info-overlaid #mediaInfo {
+    .info-overlaid #mediaInfo, .info-overlaid-toggle #mediaInfo {
         margin: auto;
         position: relative;
         top: 0;
@@ -800,7 +800,7 @@
             document.getElementById('mainContainer').classList.add(theme.layoutStyle);
         }
         if(theme.infoStyle){
-            document.getElementById('mainContainer').classList.remove('info-none', 'info-overlaid', 'info-below');
+            document.getElementById('mainContainer').classList.remove('info-none', 'info-overlaid', 'info-below', 'info-overlaid-toggle');
             document.getElementById('mainContainer').classList.add('info-' + theme.infoStyle);
         }
         if(theme.titleStyle){
@@ -958,7 +958,16 @@
                 let infoContainerEl = trackEl.querySelector('.infoContainer');
                 trackEl.querySelector('.toggleInfo').addEventListener('click', (e) => {
                     infoContainerEl.style.height = trackEl.querySelector('.info').clientHeight + 'px';
-                    infoContainerEl.classList.toggle('active');
+                    entry.infoToggled = infoContainerEl.classList.toggle('active');
+                    if(config.theme.infoStyle === 'overlaid-toggle'){
+                        if(entry.info && entry.infoToggled){
+                            mediaInfoEl.innerHTML = entry.info;
+                            mediaInfoContainer.classList.add('active');
+                        } else {
+                            mediaInfoEl.innerHTML = '';
+                            mediaInfoContainer.classList.remove('active');
+                        }
+                    }
                 });
             }
             if(!entry.previewFade && entry.previewFade !== false){
@@ -1450,7 +1459,7 @@
         setLoading(currentEntry);
         entry.trackEl.classList.add('active');
         controlsEl.querySelector('.title').innerHTML = entry.title;
-        if(entry.info){
+        if(entry.info && (config.theme.infoStyle !== 'overlaid-toggle' || entry.infoToggled)){
             mediaInfoEl.innerHTML = entry.info;
             mediaInfoContainer.classList.add('active');
         } else {
@@ -1480,7 +1489,7 @@
         if(isNaN(secs)){
             return '00:00';
         }
-        
+
         let sec_num = Math.max(0, Math.round(secs)); //flooring is more correct, but rounding gives nicer results due to playback event buffering
         let hours   = Math.floor(sec_num / 3600);
         let minutes = Math.floor(sec_num / 60) % 60;

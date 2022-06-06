@@ -225,7 +225,9 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 `infoStyle`  
 > Styles the track info of the currently playing track  
 > `"overlaid"` (default) text sits layered on top of the cover image  
+> `"overlaid-toggle"` text sits layered on top of the cover image only if the info drawer is toggled on the current track, otherwise it is hidden  
 > `"below"` text sits below the cover image (note: this will push down the controls and track list in a vertical layout)  
+> `"none"` text is not displayed (other than in the info drawer under the track, when toggled)  
 
 \
 `contentWidth`  
