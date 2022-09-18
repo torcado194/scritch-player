@@ -911,6 +911,14 @@
             descriptionEl.innerHTML = description;
         }
     }
+    function updateLoopMode(mode){
+        if(mode === undefined || mode === ''){
+            config.loopModeDefault = 'none';
+        } else {
+            config.loopModeDefault = mode;
+        }
+        loopSwitch(config.loopModeDefault);
+    }
 
     function localStorageSet(key, value){
         try {
@@ -945,6 +953,7 @@
         loadContent(data);
         updateTitle(title)
         updateDescription(description);
+        updateLoopMode(data.loopModeDefault)
         updateTheme(theme);
 
         updateTrackPreview();
@@ -1453,22 +1462,31 @@
             loadEntry(entry);
         }
     }
-    function loopSwitch(){
+    function loopSwitch(mode){
         loopSwitchEl.classList.remove('icon-loop', 'icon-loop-1');
         loopSwitchEl.style.opacity = 1;
-        if(loopMode === "none"){
-            loopMode = "playlist";
-            loopSwitchEl.classList.add('icon-loop');
-            loopSwitchEl.setAttribute('title', 'loop playlist');
-        } else if(loopMode === "playlist"){
-            loopMode = "track";
-            loopSwitchEl.classList.add('icon-loop-1');
-            loopSwitchEl.setAttribute('title', 'loop track');
+        if(mode){
+            loopMode = mode;
         } else {
-            loopMode = "none";
+            if(loopMode === "none"){
+                loopMode = "playlist";
+            } else if(loopMode === "playlist"){
+                loopMode = "track";
+            } else {
+                loopMode = "none";
+            }
+        }
+
+        if(loopMode === "none"){
             loopSwitchEl.classList.add('icon-loop');
             loopSwitchEl.style.opacity = 0.5;
             loopSwitchEl.setAttribute('title', 'loop off');
+        } else if(loopMode === "playlist"){
+            loopSwitchEl.classList.add('icon-loop');
+            loopSwitchEl.setAttribute('title', 'loop playlist');
+        } else {
+            loopSwitchEl.classList.add('icon-loop-1');
+            loopSwitchEl.setAttribute('title', 'loop track');
         }
     }
 

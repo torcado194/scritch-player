@@ -100,6 +100,14 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 `theme` (optional)  
 > An object containing theme settings and colors  
 
+\
+`loopModeDefault` (optional)  
+> The type of loop mode to start with.  
+> Can be set to one of:
+> - `"none"` (no looping) (default)
+> - `"playlist"` (after the last track ends, start playing the first track)
+> - `"track"` (loop the same selected track repeatedly)
+
 -----
 
 **media entry options**  
