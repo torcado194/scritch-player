@@ -136,6 +136,12 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 > Enable this if e.g. you want to show that this file would be available in the purchased download of your album.  
 > Note: the `file` field is not required if this is enabled, you shouldn't include the file in the player.  
 
+\
+`loopCount` (optional)  
+> The number of times to repeat the track after the first play  
+> Ignored if set to 0 or lower  
+> Defaults to `0`  
+
 ***preview options***  
 
 *a preview is a section of a full track, used if e.g. you want to include a snippet of a track that would be available in the full download of your album.*  
