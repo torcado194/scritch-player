@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icons';
-  src:  url('fonts/icons.eot?vz49dm');
-  src:  url('fonts/icons.eot?vz49dm#iefix') format('embedded-opentype'),
-    url('fonts/icons.ttf?vz49dm') format('truetype'),
-    url('fonts/icons.woff?vz49dm') format('woff'),
-    url('fonts/icons.svg?vz49dm#icons') format('svg');
+  src:  url('fonts/icons.eot?7p075h');
+  src:  url('fonts/icons.eot?7p075h#iefix') format('embedded-opentype'),
+    url('fonts/icons.ttf?7p075h') format('truetype'),
+    url('fonts/icons.woff?7p075h') format('woff'),
+    url('fonts/icons.svg?7p075h#icons') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -35,6 +35,9 @@
 .icon-loading-big:before {
   content: "\25cc";
 }
+.icon-loop-edit:before {
+  content: "\1f504";
+}
 .icon-loop-1:before {
   content: "\1f502";
 }
@@ -42,7 +45,7 @@
   content: "\1f501";
 }
 .icon-play-loop:before {
-  content: "\1f503";
+  content: "\27f2";
 }
 .icon-duration-preview:before {
   content: "\1f55b";
@@ -141,7 +144,7 @@
   content: "\22ef";
 }
 .icon-loading:before {
-  content: "\1f504";
+  content: "\1f506";
 }
 .icon-next:before {
   content: "\23ed";
