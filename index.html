@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="src/reset.css">
     <link rel="stylesheet" href="src/common.css">
     <link rel="stylesheet" href="src/fonts.css">
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@600&text=0123456789&display=swap" rel="stylesheet"> -->
 </head>
 <style>
     :root {
@@ -22,6 +25,14 @@
         --previewStripeColor2: #2c2c2c;
         --linkColor: #838383;
         --font: sans-serif;
+    }
+
+    @font-face {
+        font-family: 'Rubik';
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url('src/fonts/rubikNumbers-edit.woff2') format('woff2');
     }
 
     @keyframes pulse {
@@ -306,6 +317,24 @@
         font-size: 40px;
         animation: pulse 1.0s infinite;
     }
+    #bigButton.looped:before {
+        content: attr(loopcount);
+        display: block;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        color: var(--secondaryColor);
+        background-color: var(--primaryColor);
+        border: 2px solid var(--backgroundColor);
+        border-radius: 20px;
+        font-family: 'Rubik';
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        letter-spacing: -1px;
+    }
 
     #controls {
         display: flex;
@@ -400,7 +429,7 @@
         margin: auto -2px;
     }
 
-    #controls #nextTrack, #controls #prevTrack {
+    #controls #nextTrack, #controls #prevTrack, #controls #loopSwitch {
         border: none;
         margin-right: 20px;
         flex: 0 0;
@@ -409,6 +438,9 @@
         padding: 0;
         align-self: start;
         cursor: pointer;
+    }
+    #controls #loopSwitch {
+        opacity: 0.5;
     }
 
     #controls .spacer {
@@ -590,6 +622,28 @@
         font-size: 20px;
     }
 
+    .track.looped button:before {
+        content: attr(loopcount);
+        display: block;
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        color: var(--secondaryColor);
+        background-color: var(--primaryColor);
+        border: 2px solid var(--backgroundColor);
+        border-radius: 20px;
+        font-family: 'Rubik';
+        font-weight: 600;
+        font-size: 10px;
+        text-align: center;
+        letter-spacing: -1px;
+    }
+    .track.active.looped button:before {
+        border-color: var(--secondaryColor);;
+    }
+
     .track .title {
         word-break: break-word;
     }
@@ -714,6 +768,7 @@
                         </button>
                         <button id="prevTrack" class="icon-previous"></button>
                         <button id="nextTrack" class="icon-next"></button>
+                        <button id="loopSwitch" class="icon-loop" title="loop off"></button>
                         <div class="spacer"></div>
                         <div id="volumeContainer">
                             <div id="volumeTrackContainer">
@@ -746,6 +801,7 @@
     let scrubberEl = document.getElementById('scrubber');
     let nextTrackEl = document.getElementById('nextTrack');
     let prevTrackEl = document.getElementById('prevTrack');
+    let loopSwitchEl = document.getElementById('loopSwitch');
     
     let titleEl = document.getElementById('title');
     let titleContainerEl = document.getElementById('titleContainer');
@@ -772,6 +828,7 @@
 
     let loadedFirst = false;
     let autoPlay = false;
+    let loopMode = "none";
 
     let config = {};
 
@@ -948,6 +1005,7 @@
             </div>`);
             let trackEl = tracksEl.lastChild;
             entry.trackEl = trackEl;
+            let buttonEl = trackEl.querySelector('button');
             if(entry.feature){
                 featureIndex = i;
             }
@@ -973,8 +1031,14 @@
             if(!entry.previewFade && entry.previewFade !== false){
                 entry.previewFade = true; //default true
             }
+            if(typeof entry.loopCount === 'number' && entry.loopCount > 0){
+                entry.remainingLoops = entry.loopCount;
+                trackEl.classList.add('looped');
+                buttonEl.setAttribute('title', 'loop count');
+                updateLoops(entry);
+            }
             if(!entry.locked){
-                trackEl.querySelector('button').onclick = () => {
+                buttonEl.onclick = () => {
                     loadedFirst = true;
                     autoPlay = true;
                     playEntry(entry);
@@ -1036,8 +1100,8 @@
                     entry.error = true;
                     entry.errorMessage = e.target.error;
                     removeLoading(entry, true);
-                    trackEl.querySelector('button').classList.add('error', 'icon-warning');
-                    trackEl.querySelector('button').setAttribute('title', 'error loading file');
+                    buttonEl.classList.add('error', 'icon-warning');
+                    buttonEl.setAttribute('title', 'error loading file');
                 });
                 loaderEl.addEventListener('canplay', e => {
                     removeLoading(entry, true);
@@ -1255,6 +1319,9 @@
     prevTrackEl.addEventListener('click', e => {
         prevTrack();
     });
+    loopSwitchEl.addEventListener('click', e => {
+        loopSwitch();
+    });
 
     function updateTrackPreview(){
         if(currentEntry.needsDuration){
@@ -1347,22 +1414,31 @@
         return !entry.error && !entry.locked;
     }
 
-    function nextTrack(loop=true){
-        let idx = media.indexOf(currentEntry)+1;
-        if(!loop && idx >= media.length){
-            return;
-        }
-        let entry = media[mod(idx, media.length)];
-        let i = 0;
-        while(!canPlay(entry) && i < media.length){
-            i++;
-            idx++;
+    function nextTrack(manual=true){
+        if(loopMode === 'track'){
+            loadEntry(currentEntry);
+        } else if(!manual && currentEntry.remainingLoops > 0){
+            currentEntry.remainingLoops--;
+            updateLoops(currentEntry);
+            loadEntry(currentEntry);
+        } else {
+            let loop = manual || loopMode === "playlist";
+            let idx = media.indexOf(currentEntry)+1;
             if(!loop && idx >= media.length){
                 return;
             }
-            entry = media[mod(idx, media.length)];
+            let entry = media[mod(idx, media.length)];
+            let i = 0;
+            while(!canPlay(entry) && i < media.length){
+                i++;
+                idx++;
+                if(!loop && idx >= media.length){
+                    return;
+                }
+                entry = media[mod(idx, media.length)];
+            }
+            loadEntry(entry);
         }
-        loadEntry(entry);
     }
     function prevTrack(){
         if(playerEl.currentTime > (currentEntry.previewStart - currentEntry.audioStart) + 5){
@@ -1377,6 +1453,24 @@
                 entry = media[mod(idx, media.length)];
             }
             loadEntry(entry);
+        }
+    }
+    function loopSwitch(){
+        loopSwitchEl.classList.remove('icon-loop', 'icon-loop-1');
+        loopSwitchEl.style.opacity = 1;
+        if(loopMode === "none"){
+            loopMode = "playlist";
+            loopSwitchEl.classList.add('icon-loop');
+            loopSwitchEl.setAttribute('title', 'loop playlist');
+        } else if(loopMode === "playlist"){
+            loopMode = "track";
+            loopSwitchEl.classList.add('icon-loop-1');
+            loopSwitchEl.setAttribute('title', 'loop track');
+        } else {
+            loopMode = "none";
+            loopSwitchEl.classList.add('icon-loop');
+            loopSwitchEl.style.opacity = 0.5;
+            loopSwitchEl.setAttribute('title', 'loop off');
         }
     }
 
@@ -1406,6 +1500,25 @@
         entry.loading = false;
     }
 
+    function updateLoops(entry){
+        if(entry.loopCount > 0){
+            let buttonEl = entry.trackEl.querySelector('button');
+            buttonEl.setAttribute('loopcount', entry.remainingLoops);
+            // buttonEl.setAttribute('title', 'loop count');
+        }
+        if(entry === currentEntry){
+            if(entry.loopCount > 0){
+                bigButtonEl.setAttribute('loopcount', entry.remainingLoops);
+            } else {
+                bigButtonEl.removeAttribute('loopcount');
+            }
+        }
+    }
+    function resetLoops(entry){
+        entry.remainingLoops = entry.loopCount;
+        updateLoops(entry);
+    }
+
     
     function loadEntry(entry){
         if(entry.error){
@@ -1414,11 +1527,15 @@
         if(entry.locked){
             return;
         }
-        media.forEach(entry => {
-            entry.trackEl.classList.remove('active');
-            entry.trackEl.querySelector('button').classList.remove('pause');
-        });
         currentEntry = entry;
+        media.forEach(thisEntry => {
+            thisEntry.trackEl.classList.remove('active');
+            thisEntry.trackEl.querySelector('button').classList.remove('pause');
+            if(thisEntry !== entry){
+                resetLoops(thisEntry);
+            }
+            updateLoops(entry);
+        });
         if(!currentEntry.duration){
             currentEntry.duration = 999;
             currentEntry.needsDuration = true;
@@ -1429,6 +1546,11 @@
             updatePreviewVolume(0);
         } else {
             scrubberTrackContainerEl.classList.remove('preview');
+        }
+        if(entry.loopCount > 0){
+            bigButtonEl.classList.add('looped');
+        } else {
+            bigButtonEl.classList.remove('looped');
         }
         Array.from(mediaContainerEl.children).forEach(el => {
             el.classList.remove('active');

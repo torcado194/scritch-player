@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icons';
-  src:  url('fonts/icons.eot?llsbwi');
-  src:  url('fonts/icons.eot?llsbwi#iefix') format('embedded-opentype'),
-    url('fonts/icons.ttf?llsbwi') format('truetype'),
-    url('fonts/icons.woff?llsbwi') format('woff'),
-    url('fonts/icons.svg?llsbwi#icons') format('svg');
+  src:  url('fonts/icons.eot?vz49dm');
+  src:  url('fonts/icons.eot?vz49dm#iefix') format('embedded-opentype'),
+    url('fonts/icons.ttf?vz49dm') format('truetype'),
+    url('fonts/icons.woff?vz49dm') format('woff'),
+    url('fonts/icons.svg?vz49dm#icons') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -26,6 +26,24 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-plus-big:before {
+  content: "\2b";
+}
+.icon-drop-big:before {
+  content: "\2b07";
+}
+.icon-loading-big:before {
+  content: "\25cc";
+}
+.icon-loop-1:before {
+  content: "\1f502";
+}
+.icon-loop:before {
+  content: "\1f501";
+}
+.icon-play-loop:before {
+  content: "\1f503";
+}
 .icon-duration-preview:before {
   content: "\1f55b";
 }
@@ -36,7 +54,7 @@
   content: "\23f2";
 }
 .icon-end:before {
-  content: "\e900";
+  content: "\23f5";
 }
 .icon-start:before {
   content: "\23f4";
@@ -148,13 +166,4 @@
 }
 .icon-play:before {
   content: "\25b6";
-}
-.icon-plus-big:before {
-  content: "\2b";
-}
-.icon-drop-big:before {
-  content: "\2b07";
-}
-.icon-loading-big:before {
-  content: "\25cc";
 }
