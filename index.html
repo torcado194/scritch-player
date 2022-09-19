@@ -1189,11 +1189,12 @@
         }
     });
     playerEl.addEventListener('timeupdate', e => {
+        let buffer = 0.18;
         if(!scrubberDragged){
             if(currentEntry.duration && !currentEntry.needsDuration){
                 if(currentEntry.started){
                     let time = e.target.currentTime;
-                    if(time > currentEntry.previewEnd - currentEntry.audioStart){
+                    if(time > (currentEntry.previewEnd - currentEntry.audioStart) - buffer){
                         nextTrack(false);
                     } else {
                         let t = time / currentEntry.duration;
@@ -1203,6 +1204,11 @@
                 } else {
 
                 }
+            } else {
+                let time = e.target.currentTime;
+                if(time > e.target.duration - buffer){
+                    nextTrack(false);
+                } 
             }
         }
     });
@@ -1541,6 +1547,15 @@
             return;
         }
         if(entry.locked){
+            return;
+        }
+        if(entry === currentEntry){
+            if(entry.type === 'video'){
+                mediaVideoEl.currentTime = 0;
+            } else {
+            }
+            playerEl.currentTime = 0;
+            playerEl.play();
             return;
         }
         currentEntry = entry;
