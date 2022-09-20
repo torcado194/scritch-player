@@ -122,7 +122,7 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 > Defaults to the file name if not specified  
 
 \
-`featured` (optional)  
+`feature` (optional)  
 > If `true`, sets this file as the "featured" track, which will queue up first when loading the page.  
 > Can be either `true` or `false`  
 
