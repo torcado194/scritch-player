@@ -588,7 +588,7 @@
     }
 
     .track button.loading.loading:after {
-        content: "\1f504";
+        content: "\1f506";
         color: var(--secondaryColor);
         font-family: 'icons' !important;
         speak: never;
@@ -1100,7 +1100,9 @@
                     trackEl.querySelector('.duration').textContent = durationText;
                     if(entry === currentEntry){
                         updateTrackPreview();
-                        updateScrubPosition(entry.previewStart / entry.originalDuration);
+                        // updateScrubPosition(entry.previewStart / entry.originalDuration);
+                        updateScrubPosition(0);
+                        updatePreviewVolume(0);
                     }
                 });
                 loaderEl.addEventListener('error', e => {
