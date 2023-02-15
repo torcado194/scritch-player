@@ -125,6 +125,14 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 `feature` (optional)  
 > If `true`, sets this file as the "featured" track, which will queue up first when loading the page.  
 > Can be either `true` or `false`  
+> Defaults to `false`  
+
+\
+`autoload` (optional)  
+> If `true` and `feature` is also `true`, this track will play after loading.  
+> **NOTE:** this *will not* work in most cases, due to browsers preventing autoplaying audio until the user interacts with the page. This will only be relevant if the player is loaded after user interaction, e.g. when running on itch.io with autoload disabled.  
+> Can be either `true` or `false`  
+> Defaults to `false`  
 
 \
 `type` (optional)  

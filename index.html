@@ -1114,11 +1114,16 @@
                 });
                 loaderEl.addEventListener('canplay', e => {
                     removeLoading(entry, true);
+
+                    if(entry.feature && entry.autoplay){
+                        playerEl.play();
+                    }
                 });
                 loaderEl.volume = 0;
                 loaderEl.src = entry.file;
                 entry.started = false;
                 entry.loading = true;
+                entry.loaderEl = loaderEl;
             }
         });
         loadEntry(media[mod(featureIndex, media.length)]);
