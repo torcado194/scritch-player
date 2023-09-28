@@ -122,6 +122,12 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 > Defaults to the file name if not specified  
 
 \
+`cover` (optional)  
+> The name of the file in the /media folder for the cover image for this track.  
+> This will replace the main cover image when this track is playing, and uses the same theme options (such as `coverSize`)  
+> **NOTE:** this will have no effect when the media is a video, the video display takes precedence.
+
+\
 `feature` (optional)  
 > If `true`, sets this file as the "featured" track, which will queue up first when loading the page.  
 > Can be either `true` or `false`  

@@ -884,13 +884,7 @@
     }
 
     function loadContent(data){
-        if(data.cover){
-            loadCover(data.cover);
-        } else {
-            mediaImageEl.style.width = data.theme.coverSize + 'px';
-            mediaImageEl.style.height = data.theme.coverSize + 'px';
-            mediaImageEl.style.visibility = 'hidden';
-        }
+        loadCover(data.cover);
         if(data.media) loadMedia(data.media);
     }
     function updateTitle(title){
@@ -1130,12 +1124,21 @@
     }
 
     function loadCover(cover){
-        let src = cover;
-        if(!/:\/\//.test(src)){ //if not a url
-            src = mediaDir + src;
+        if(cover){
+            let src = cover;
+            if(mediaImageEl.src == src){
+                return; //already loaded
+            }
+            if(!/:\/\//.test(src)){ //if not a url
+                src = mediaDir + src;
+            }
+            mediaImageEl.src = src;
+            mediaImageEl.classList.add('active');
+        } else {
+            mediaImageEl.style.width = data.theme.coverSize + 'px';
+            mediaImageEl.style.height = data.theme.coverSize + 'px';
+            mediaImageEl.style.visibility = 'hidden';
         }
-        mediaImageEl.src = src;
-        mediaImageEl.classList.add('active');
     }
     
     playerEl.addEventListener('canplay', e => {
@@ -1435,7 +1438,7 @@
     }
 
     function nextTrack(manual=true){
-        if(loopMode === 'track'){
+        if(!manual && loopMode === 'track'){
             loadEntry(currentEntry);
         } else if(!manual && currentEntry.remainingLoops > 0){
             currentEntry.remainingLoops--;
@@ -1613,6 +1616,12 @@
             mediaVideoEl.pause();
             mediaVideoEl.removeAttribute('src');
             mediaVideoEl.load();
+
+            if(entry.cover){
+                loadCover(entry.cover);
+            } else {
+                loadCover(config.cover);
+            }
         }
         playerEl.src = entry.file;
         entry.started = false;
