@@ -885,6 +885,8 @@
 
     function loadContent(data){
         loadCover(data.cover);
+        mediaImageEl.style.width = config.theme.coverSize + 'px';
+        mediaImageEl.style.height = config.theme.coverSize + 'px';
         if(data.media) loadMedia(data.media);
     }
     function updateTitle(title){
@@ -1134,9 +1136,8 @@
             }
             mediaImageEl.src = src;
             mediaImageEl.classList.add('active');
+            mediaImageEl.style.visibility = 'visible';
         } else {
-            mediaImageEl.style.width = data.theme.coverSize + 'px';
-            mediaImageEl.style.height = data.theme.coverSize + 'px';
             mediaImageEl.style.visibility = 'hidden';
         }
     }
