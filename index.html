@@ -82,6 +82,21 @@
     button {
         font-family: 'Segoe UI Symbol', sans-serif;
     }
+    
+    a[href]:not([tabindex='-1']):focus-visible,
+    area[href]:not([tabindex='-1']):focus-visible,
+    input:not([disabled]):not([tabindex='-1']):focus-visible,
+    select:not([disabled]):not([tabindex='-1']):focus-visible,
+    textarea:not([disabled]):not([tabindex='-1']):focus-visible,
+    button:not([disabled]):not([tabindex='-1']):focus-visible,
+    iframe:not([tabindex='-1']):focus-visible,
+    [tabindex]:not([tabindex='-1']):focus-visible,
+    [contentEditable=true]:not([tabindex='-1']):focus-visible
+    {
+        outline: 2px solid rgb(83, 186, 255);
+        outline-offset: 2px;
+        border-radius: 2px;
+    }
 
     /*** title ***/
 
@@ -548,7 +563,7 @@
         align-items: center;
     }
 
-    .track button {
+    .track .playButton {
         margin-right: 12px;
         width: 26px;
         height: 26px;
@@ -562,7 +577,12 @@
         align-items: center;
         justify-content: center;
     }
-    .track button:not(.loading, .error, .locked):after {
+    /* .track .playButton:focus-visible {
+        outline: 2px solid rgb(83, 186, 255);
+        outline-offset: 2px;
+    } */
+
+    .track .playButton:not(.loading, .error, .locked):after {
         content: '';
         display: block;
         width: 0px;
@@ -575,7 +595,7 @@
         position: relative;
         left: 1px;
     }
-    .track button:not(.loading, .error, .locked).pause:after {
+    .track .playButton:not(.loading, .error, .locked).pause:after {
         content: '';
         border: 0;
         border-left: 4px solid var(--secondaryColor);
@@ -587,7 +607,7 @@
         left: 0;
     }
 
-    .track button.loading.loading:after {
+    .track .playButton.loading.loading:after {
         content: "\1f506";
         color: var(--secondaryColor);
         font-family: 'icons' !important;
@@ -600,15 +620,15 @@
         font-size: 20px;
         animation: pulse 1.0s infinite;
     }
-    .track button.error {
+    .track .playButton.error {
         opacity: 0.5;
         cursor: default;
     }
 
-    .track button.locked {
+    .track .playButton.locked {
         cursor: default;
     }
-    .track button.locked:after {
+    .track .playButton.locked:after {
         content: "\1f512";
         color: var(--secondaryColor);
         font-family: 'icons' !important;
@@ -621,7 +641,7 @@
         font-size: 20px;
     }
 
-    .track.looped button:before {
+    .track.looped .playButton:before {
         content: attr(loopcount);
         display: block;
         width: 15px;
@@ -638,7 +658,7 @@
         font-size: 10px;
         text-align: center;
     }
-    .track.active.looped button:before {
+    .track.active.looped .playButton:before {
         border-color: var(--secondaryColor);;
     }
 
@@ -668,6 +688,7 @@
     .track .toggleInfo {
         margin-left: 8px;
         margin-right: 4px;
+        border-radius: 2px;
         cursor: pointer;
         color: var(--primaryAltTextColor);
     }
@@ -681,6 +702,7 @@
     }
     .track .infoContainer:not(.active) {
         height: 0px !important;
+        overflow: hidden;
     }
 
     .track .info {
@@ -787,6 +809,7 @@
 </body>
 <script>
     let mediaDir = 'media/';
+    let mainContainerEl = document.getElementById('mainContainer');
     let playerEl = document.getElementById('player');
     let tracksEl = document.getElementById('tracks');
     let descriptionEl = document.getElementById('description');
@@ -851,16 +874,16 @@
         if(theme.previewStripeColor2) rootEl.style.setProperty('--previewStripeColor2', theme.previewStripeColor2);
         if(theme.linkColor)           rootEl.style.setProperty('--linkColor',           theme.linkColor);
         if(theme.layoutStyle){
-            document.getElementById('mainContainer').classList.remove('vertical', 'horizontal');
-            document.getElementById('mainContainer').classList.add(theme.layoutStyle);
+            mainContainerEl.classList.remove('vertical', 'horizontal');
+            mainContainerEl.classList.add(theme.layoutStyle);
         }
         if(theme.infoStyle){
-            document.getElementById('mainContainer').classList.remove('info-none', 'info-overlaid', 'info-below', 'info-overlaid-toggle');
-            document.getElementById('mainContainer').classList.add('info-' + theme.infoStyle);
+            mainContainerEl.classList.remove('info-none', 'info-overlaid', 'info-below', 'info-overlaid-toggle');
+            mainContainerEl.classList.add('info-' + theme.infoStyle);
         }
         if(theme.titleStyle){
-            document.getElementById('mainContainer').classList.remove('title-none', 'title-span');
-            document.getElementById('mainContainer').classList.add('title-' + theme.titleStyle);
+            mainContainerEl.classList.remove('title-none', 'title-span');
+            mainContainerEl.classList.add('title-' + theme.titleStyle);
         }
         if(theme.contentWidth)        document.getElementById('contentContainer').style.maxWidth = theme.contentWidth + 'px';
         if(theme.nativePlayer){
@@ -989,17 +1012,17 @@
             tracksEl.insertAdjacentHTML('beforeend', 
             `<div class="track ${entry.locked ? 'locked' : ''}" ${entry.locked ? 'title="This file is available in the full download"' : ''}>
                 <div class="main">
-                    <button class="${entry.locked ? 'locked' : 'loading'}"></button>
+                    <button class="playButton ${entry.locked ? 'locked' : 'loading'}"></button>
                     <div class="details">
                         <div class="number">${i+1}. </div>
                         <div class="title">${entry.title}</div>
                         <div class="duration"></div>
                         <div class="spacer"></div>
-                        ${entry.info ? `<div class="toggleInfo icon-info"></div>` : ''}
+                        ${entry.info ? `<button class="toggleInfo icon-info"></button>` : ''}
                     </div>
                 </div>
                 ${entry.info ? `
-                <div class="infoContainer">
+                <div class="infoContainer" inert>
                     <div class="info">
                         ${entry.info}
                     </div>
@@ -1020,6 +1043,11 @@
                 trackEl.querySelector('.toggleInfo').addEventListener('click', (e) => {
                     infoContainerEl.style.height = trackEl.querySelector('.info').clientHeight + 'px';
                     entry.infoToggled = infoContainerEl.classList.toggle('active');
+                    if(entry.info && entry.infoToggled){
+                        infoContainerEl.removeAttribute("inert");
+                    } else {
+                        infoContainerEl.setAttribute("inert", ""); 
+                    }
                     if(config.theme.infoStyle === 'overlaid-toggle'){
                         if(entry.info && entry.infoToggled){
                             mediaInfoEl.innerHTML = entry.info;
@@ -1312,6 +1340,13 @@
             volumeIconEl.classList.add(volumeIcons[2]);
         }
     }
+
+    document.addEventListener('keydown', e => {
+        if(e.key === " " && e.target === document.body){
+            playEntry(currentEntry);
+            e.preventDefault();
+        }
+    })
     
     let scrubberDragged = false;
     scrubberTrackContainerEl.addEventListener('pointerdown', e => {
@@ -1600,6 +1635,7 @@
         if(entry.type === 'video'){
             mediaVideoEl.src = entry.file;
             mediaVideoEl.classList.add('active');
+            mediaImageEl.style.visibility = 'hidden';
             playerEl.classList.add('video');
 
             if(config.theme.nativePlayer){
