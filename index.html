@@ -11,6 +11,8 @@
     <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@600&text=0123456789&display=swap" rel="stylesheet"> -->
+
+    <base target="_parent" />
 </head>
 <style>
     :root {
@@ -577,11 +579,6 @@
         align-items: center;
         justify-content: center;
     }
-    /* .track .playButton:focus-visible {
-        outline: 2px solid rgb(83, 186, 255);
-        outline-offset: 2px;
-    } */
-
     .track .playButton:not(.loading, .error, .locked):after {
         content: '';
         display: block;
