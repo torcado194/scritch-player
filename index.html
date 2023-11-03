@@ -26,6 +26,8 @@
         --previewStripeColor1: #3f3f3f;
         --previewStripeColor2: #2c2c2c;
         --linkColor: #838383;
+        --overlayTextColor: var(--primaryTextColor);
+        --overlayBackgroundColor: rgb(0,0,0,0.5);
         --font: sans-serif;
     }
 
@@ -216,7 +218,8 @@
         backdrop-filter: blur(3px);
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        color: var(--overlayTextColor);
+        background-color: var(--overlayBackgroundColor);
         border-radius: 0;
         display: flex;
         text-align: center;
@@ -692,6 +695,9 @@
     .track.active .toggleInfo {
         color: var(--primaryColor);
     }
+    .hide-info .track .toggleInfo {
+        cursor: auto;
+    }
 
     .track .infoContainer {
         width: 100%;
@@ -700,6 +706,9 @@
     .track .infoContainer:not(.active) {
         height: 0px !important;
         overflow: hidden;
+    }
+    .hide-info .track .infoContainer {
+        display: none;
     }
 
     .track .info {
@@ -860,16 +869,18 @@
     function updateTheme(theme){
         config.theme = theme;
         let rootEl = document.documentElement;
-        if(theme.primaryColor)        rootEl.style.setProperty('--primaryColor',        theme.primaryColor);
-        if(theme.primaryAltColor)     rootEl.style.setProperty('--primaryAltColor',     theme.primaryAltColor);
-        if(theme.primaryTextColor)    rootEl.style.setProperty('--primaryTextColor',    theme.primaryTextColor);
-        if(theme.primaryAltTextColor) rootEl.style.setProperty('--primaryAltTextColor', theme.primaryAltTextColor);
-        if(theme.secondaryColor)      rootEl.style.setProperty('--secondaryColor',      theme.secondaryColor);
-        if(theme.highlightColor)      rootEl.style.setProperty('--highlightColor',      theme.highlightColor);
-        if(theme.backgroundColor)     rootEl.style.setProperty('--backgroundColor',     theme.backgroundColor);
-        if(theme.previewStripeColor1) rootEl.style.setProperty('--previewStripeColor1', theme.previewStripeColor1);
-        if(theme.previewStripeColor2) rootEl.style.setProperty('--previewStripeColor2', theme.previewStripeColor2);
-        if(theme.linkColor)           rootEl.style.setProperty('--linkColor',           theme.linkColor);
+        if(theme.primaryColor)           rootEl.style.setProperty('--primaryColor',           theme.primaryColor);
+        if(theme.primaryAltColor)        rootEl.style.setProperty('--primaryAltColor',        theme.primaryAltColor);
+        if(theme.primaryTextColor)       rootEl.style.setProperty('--primaryTextColor',       theme.primaryTextColor);
+        if(theme.primaryAltTextColor)    rootEl.style.setProperty('--primaryAltTextColor',    theme.primaryAltTextColor);
+        if(theme.secondaryColor)         rootEl.style.setProperty('--secondaryColor',         theme.secondaryColor);
+        if(theme.highlightColor)         rootEl.style.setProperty('--highlightColor',         theme.highlightColor);
+        if(theme.backgroundColor)        rootEl.style.setProperty('--backgroundColor',        theme.backgroundColor);
+        if(theme.previewStripeColor1)    rootEl.style.setProperty('--previewStripeColor1',    theme.previewStripeColor1);
+        if(theme.previewStripeColor2)    rootEl.style.setProperty('--previewStripeColor2',    theme.previewStripeColor2);
+        if(theme.linkColor)              rootEl.style.setProperty('--linkColor',              theme.linkColor);
+        if(theme.overlayTextColor)       rootEl.style.setProperty('--overlayTextColor',       theme.overlayTextColor);
+        if(theme.overlayBackgroundColor) rootEl.style.setProperty('--overlayBackgroundColor', theme.overlayBackgroundColor);
         if(theme.layoutStyle){
             mainContainerEl.classList.remove('vertical', 'horizontal');
             mainContainerEl.classList.add(theme.layoutStyle);
@@ -889,6 +900,11 @@
         } else {
             document.getElementById('audio').classList.remove('native');
             mediaVideoEl.removeAttribute('controls');
+        }
+        if(theme.hideInfoDropdown){
+            mainContainerEl.classList.add('hide-info');
+        } else {
+            mainContainerEl.classList.remove('hide-info');
         }
         mediaContainerEl.style.maxWidth = theme.coverSize + 'px';
         mediaContainerEl.style.maxHeight = theme.coverSize + 'px';
@@ -1164,6 +1180,14 @@
             mediaImageEl.style.visibility = 'visible';
         } else {
             mediaImageEl.style.visibility = 'hidden';
+        }
+    }
+
+    function setCover(cover, size){
+        if(cover){
+            config.cover = cover;
+            size && (config.coverSize = size);
+            loadCover(cover)
         }
     }
     
