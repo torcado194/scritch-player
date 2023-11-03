@@ -244,6 +244,14 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 > Color of links in text  
 
 \
+`overlayTextColor`  
+> Color of info text on the cover overlay  
+
+\
+`overlayBackgroundColor`  
+> Color of the overlay background  
+
+\
 `layoutStyle`  
 > Styles the overall structure of the player  
 > `"horizontal"` (default) the cover image sits to the right of the player controls and track list  
@@ -256,6 +264,12 @@ And that's it! you can upload the files to your website, or zip them up and uplo
 > `"overlaid-toggle"` text sits layered on top of the cover image only if the info drawer is toggled on the current track, otherwise it is hidden  
 > `"below"` text sits below the cover image (note: this will push down the controls and track list in a vertical layout)  
 > `"none"` text is not displayed (other than in the info drawer under the track, when toggled)  
+
+\
+`hideInfoDropdown`  
+> Hides the info dropdown box beneath tracks  
+> `false` (default) info dropdown is not hidden  
+> `true` info dropdown is hidden  
 
 \
 `contentWidth`  
