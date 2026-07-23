@@ -1012,7 +1012,6 @@
         autoPlay = false;
         bigButtonEl.classList.remove('pause');
         media = list.map(entry => {
-            //return {file: entry.file, title: entry.title};
             if(!/:\/\//.test(entry.file)){ //if not a url
                 entry.file = mediaDir + entry.file;
             }
@@ -1096,9 +1095,9 @@
                 if(entry.previewStart || entry.previewEnd){
                     entry.preview = true;
                 }
-                let needsPreviewEnd = false;
+                entry.needsPreviewEnd = false;
                 if(!entry.previewEnd){
-                    needsPreviewEnd = true;
+                    entry.needsPreviewEnd = true;
                 }
                 entry.originalDuration = (entry.originalDuration && fromHMS(entry.originalDuration)) || 1;
                 entry.previewStart = (entry.previewStart && fromHMS(entry.previewStart)) || 0;
@@ -1107,39 +1106,16 @@
                 loaderEl.addEventListener('loadedmetadata', e => {
                     entry.duration = e.target.duration;
                     entry.needsDuration = false;
-                    entry.previewStart = entry.previewStart || 0;
-                    if(needsPreviewEnd){
-                        entry.previewEnd = entry.duration;
-                    }
-                    entry.originalDuration = Math.max(entry.originalDuration, entry.duration, entry.previewEnd);
-                    entry.previewDuration = (entry.previewEnd - entry.previewStart);
-
-                    //make assumptions about the audio start points
-                    if(entry.duration < entry.previewDuration){ //smaller than given preview duration
-                        //left align to preview
-                        entry.audioStart = entry.previewStart;
-                    } else if(entry.duration < entry.originalDuration - entry.previewStart){ //else, smaller than region between preview start and original end
-                        //left align to preview
-                        entry.audioStart = entry.previewStart;
-                    } else if(entry.duration < entry.originalDuration){ //else, smaller than original duration
-                        //right align to original
-                        entry.audioStart = entry.originalDuration - entry.duration;
-                    } else { //larger than original duration
-                        //left align to original
-                        entry.audioStart = 0;
-                    }
-                    entry.audioEnd = entry.audioStart + entry.duration;
-
-                    let durationText = toHMS(entry.duration);
-                    if(entry.preview){
-                        durationText += ' (preview)';
-                    }
-                    trackEl.querySelector('.duration').textContent = durationText;
-                    if(entry === currentEntry){
-                        updateTrackPreview();
-                        // updateScrubPosition(entry.previewStart / entry.originalDuration);
-                        updateScrubPosition(0);
-                        updatePreviewVolume(0);
+                    if (e.target.duration === Infinity || isNaN(Number(e.target.duration))) {
+                        entry.duration = 999;
+                        entry.needsDuration = true;
+                        e.target.currentTime = 1e101;
+                        e.target.addEventListener('timeupdate', function(event){
+                            event.target.currentTime = 0;
+                            updateDuration(entry, event.target.duration);
+                        }, {once: true});
+                    } else {
+                        updateDuration(entry, loaderEl.duration);
                     }
                 });
                 loaderEl.addEventListener('error', e => {
@@ -1157,13 +1133,59 @@
                     }
                 });
                 loaderEl.volume = 0;
-                loaderEl.src = entry.file;
+                fetch(entry.file).then(r => r.blob()).then(blob => {
+                    entry.file = URL.createObjectURL(blob);
+                    loaderEl.src = entry.file;
+                    if(entry === currentEntry){
+                        playerEl.src = entry.file;
+                    }
+                });
                 entry.started = false;
                 entry.loading = true;
                 entry.loaderEl = loaderEl;
             }
         });
         loadEntry(media[mod(featureIndex, media.length)]);
+    }
+
+    function updateDuration(entry, duration){
+        entry.duration = duration;
+        entry.needsDuration = false;
+        entry.previewStart = entry.previewStart || 0;
+        if(entry.needsPreviewEnd){
+            entry.previewEnd = entry.duration;
+            entry.needsPreviewEnd = false;
+        }
+        entry.originalDuration = Math.max(entry.originalDuration, entry.duration, entry.previewEnd);
+        entry.previewDuration = (entry.previewEnd - entry.previewStart);
+
+        //make assumptions about the audio start points
+        if(entry.duration < entry.previewDuration){ //smaller than given preview duration
+            //left align to preview
+            entry.audioStart = entry.previewStart;
+        } else if(entry.duration < entry.originalDuration - entry.previewStart){ //else, smaller than region between preview start and original end
+            //left align to preview
+            entry.audioStart = entry.previewStart;
+        } else if(entry.duration < entry.originalDuration){ //else, smaller than original duration
+            //right align to original
+            entry.audioStart = entry.originalDuration - entry.duration;
+        } else { //larger than original duration
+            //left align to original
+            entry.audioStart = 0;
+        }
+        entry.audioEnd = entry.audioStart + entry.duration;
+
+        let durationText = toHMS(entry.duration);
+        if(entry.preview){
+            durationText += ' (preview)';
+        }
+        entry.trackEl.querySelector('.duration').textContent = durationText;
+        if(entry === currentEntry){
+            updateTrackPreview();
+            // updateScrubPosition(entry.previewStart / entry.originalDuration);
+            updateScrubPosition(0);
+            updatePreviewVolume(0);
+        }
     }
 
     function loadCover(cover){
@@ -1193,9 +1215,8 @@
     
     playerEl.addEventListener('canplay', e => {
         removeLoading(currentEntry);
-        if(currentEntry.needsDuration){
-            currentEntry.duration = playerEl.duration;
-            currentEntry.needsDuration = false;
+        if(currentEntry.needsDuration && playerEl.duration != Infinity){
+            updateDuration(currentEntry, playerEl.duration);
         }
         if(autoPlay && !currentEntry.started){
             currentEntry.started = true;
@@ -1684,6 +1705,7 @@
         playerEl.src = entry.file;
         entry.started = false;
         setLoading(currentEntry);
+        playerEl.currentTime = 1e101;
         entry.trackEl.classList.add('active');
         controlsEl.querySelector('.title').innerHTML = entry.title;
         if(entry.info && (config.theme.infoStyle !== 'overlaid-toggle' || entry.infoToggled)){
